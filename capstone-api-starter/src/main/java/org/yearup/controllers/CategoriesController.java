@@ -1,6 +1,8 @@
 package org.yearup.controllers;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.yearup.models.Category;
 import org.yearup.models.Product;
@@ -15,61 +17,67 @@ import java.util.List;
 // add annotation to allow cross site origin requests
 @RestController
 @RequestMapping("/categories")
-
+@CrossOrigin
+@PreAuthorize("isAuthenticated()")
 public class CategoriesController
 {
     private CategoryService categoryService;
     private ProductService productService;
 
-
-    // create an Autowired constructor to inject the categoryService and productService
-
-    // add the appropriate annotation for a get action
-    @GetMapping("")
-    public List<Category> getAll()
-    {
-        // find and return all categories
-        return this.categoryService.getAllCategories();
+    public CategoriesController(CategoryService categoryService, ProductService productService) {
+        this.categoryService = categoryService;
+        this.productService = productService;
     }
 
-    // add the appropriate annotation for a get action
+
+    @GetMapping("")
+    @PreAuthorize("permitAll()")
+    public ResponseEntity<List<Category>> getAll()
+    {
+        List<Category> categories = categoryService.getAllCategories();
+        return ResponseEntity.ok(categories);
+    }
+
+    @GetMapping("{id}")
+    @PreAuthorize("permitAll()")
     public Category getById(@PathVariable int id)
     {
-        // get the category by id
-        return null;
+        return this.categoryService.getById(id);
     }
 
     // the url to return all products in category 1 would look like this
     // https://localhost:8080/categories/1/products
     @GetMapping("{categoryId}/products")
-    public List<Product> getProductsById(@PathVariable int categoryId)
+    @PreAuthorize("permitAll()")
+    public ResponseEntity<List<Product>> getProductsById(@PathVariable int categoryId)
     {
-        // get a list of product by categoryId
-        return null;
+        List<Product> products = this.productService.listByCategoryId(categoryId);
+        return ResponseEntity.ok(products) ;
     }
 
-    // add annotation to call this method for a POST action
-    // add annotation to ensure that only an ADMIN can call this function
+    @PostMapping("")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Category> addCategory(@RequestBody Category category)
     {
-        // insert the category and return it with status 201 Created
-        return null;
+        Category newCategory = this.categoryService.create(category);
+        return  ResponseEntity.ok(newCategory);
     }
 
-    // add annotation to call this method for a PUT (update) action - the url path must include the categoryId
-    // add annotation to ensure that only an ADMIN can call this function
+
+    @PutMapping("{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public Category updateCategory(@PathVariable int id, @RequestBody Category category)
     {
-        // update the category by id and return the updated category (200 OK)
-        return null;
+        return this.categoryService.update(id,category);
     }
 
 
-    // add annotation to call this method for a DELETE action - the url path must include the categoryId
-    // add annotation to ensure that only an ADMIN can call this function
+
+    @DeleteMapping("{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> deleteCategory(@PathVariable int id)
     {
-        // delete the category by id and return status 204 No Content
-        return null;
+        this.categoryService.delete(id);
+        return ResponseEntity.noContent().build();
     }
 }
