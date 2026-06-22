@@ -9,6 +9,7 @@ import org.springframework.web.servlet.NoHandlerFoundException;
 import org.yearup.errors.CategoryNotFound;
 import org.yearup.errors.DuplicateCategory;
 import org.yearup.errors.ProductNotFound;
+import org.yearup.errors.UserNotFound;
 
 import java.time.LocalDateTime;
 
@@ -32,6 +33,12 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(NoHandlerFoundException.class)
     public ResponseEntity<ApiErrorResponse> handleNoHandlerFound(RuntimeException ex){
         return new ResponseEntity<>(new ApiErrorResponse(LocalDateTime.now(), HttpStatus.INTERNAL_SERVER_ERROR.value(), HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase(), ex.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @ExceptionHandler(UserNotFound.class)
+    public ResponseEntity<ApiErrorResponse> handleUserNotFound(RuntimeException ex){
+        return new ResponseEntity<>(new ApiErrorResponse(LocalDateTime.now(), HttpStatus.NOT_FOUND.value(), HttpStatus.NOT_FOUND.getReasonPhrase(), ex.getMessage()), HttpStatus.NOT_FOUND);
+
     }
 
 
