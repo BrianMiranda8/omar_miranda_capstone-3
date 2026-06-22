@@ -9,6 +9,7 @@ import org.yearup.models.Product;
 import org.yearup.service.CategoryService;
 import org.yearup.service.ProductService;
 
+import java.net.URI;
 import java.util.List;
 
 // add the annotations to make this a REST controller
@@ -40,9 +41,11 @@ public class CategoriesController
 
     @GetMapping("{id}")
     @PreAuthorize("permitAll()")
-    public Category getById(@PathVariable int id)
+    public ResponseEntity<Category> getById(@PathVariable int id)
     {
-        return this.categoryService.getById(id);
+        Category category = this.categoryService.getById(id);
+
+        return ResponseEntity.ok(category);
     }
 
     // the url to return all products in category 1 would look like this
@@ -60,15 +63,18 @@ public class CategoriesController
     public ResponseEntity<Category> addCategory(@RequestBody Category category)
     {
         Category newCategory = this.categoryService.create(category);
-        return  ResponseEntity.ok(newCategory);
+        URI location = URI.create("/categories/" + newCategory.getCategoryId());
+
+        return  ResponseEntity.created(location).body(newCategory);
     }
 
 
     @PutMapping("{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public Category updateCategory(@PathVariable int id, @RequestBody Category category)
+    public ResponseEntity<Category> updateCategory(@PathVariable int id, @RequestBody Category category)
     {
-        return this.categoryService.update(id,category);
+        Category newCategory = this.categoryService.update(id,category);
+        return ResponseEntity.ok(newCategory);
     }
 
 

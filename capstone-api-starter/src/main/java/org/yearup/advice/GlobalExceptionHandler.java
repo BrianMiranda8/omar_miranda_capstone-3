@@ -33,8 +33,10 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ApiErrorResponse> handleNoHandlerFound(RuntimeException ex){
         return new ResponseEntity<>(new ApiErrorResponse(LocalDateTime.now(), HttpStatus.INTERNAL_SERVER_ERROR.value(), HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase(), ex.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
     }
-    @ExceptionHandler(RuntimeException.class)
-    public ResponseEntity<ApiErrorResponse> handleGlobalException(RuntimeException ex){
-        return new ResponseEntity<>(new ApiErrorResponse(LocalDateTime.now(), HttpStatus.INTERNAL_SERVER_ERROR.value(), HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase(), ex.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
-    }
+
+
+//    @ExceptionHandler(RuntimeException.class)
+//    public ResponseEntity<ApiErrorResponse> handleGlobalException(RuntimeException ex){
+//        return new ResponseEntity<>(new ApiErrorResponse(LocalDateTime.now(), HttpStatus.INTERNAL_SERVER_ERROR.value(), HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase(), ex.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+//    }
 }
