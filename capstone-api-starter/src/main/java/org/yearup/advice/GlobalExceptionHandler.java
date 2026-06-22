@@ -8,6 +8,7 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.NoHandlerFoundException;
 import org.yearup.errors.CategoryNotFound;
 import org.yearup.errors.DuplicateCategory;
+import org.yearup.errors.ProductNotFound;
 
 import java.time.LocalDateTime;
 
@@ -22,6 +23,11 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(DuplicateCategory.class)
     public ResponseEntity<ApiErrorResponse> handleDuplicateCategory(DuplicateCategory ex){
         return new ResponseEntity<>(new ApiErrorResponse(LocalDateTime.now(), HttpStatus.CONFLICT.value(), HttpStatus.CONFLICT.getReasonPhrase(), ex.getMessage()), HttpStatus.CONFLICT);
+    }
+    @ExceptionHandler(ProductNotFound.class)
+    public  ResponseEntity<ApiErrorResponse> handleProductNotFound(ProductNotFound ex){
+        return new ResponseEntity<>(new ApiErrorResponse(LocalDateTime.now(), HttpStatus.NOT_FOUND.value(), HttpStatus.NOT_FOUND.getReasonPhrase(), ex.getMessage()), HttpStatus.NOT_FOUND);
+
     }
     @ExceptionHandler(NoHandlerFoundException.class)
     public ResponseEntity<ApiErrorResponse> handleNoHandlerFound(RuntimeException ex){

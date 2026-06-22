@@ -1,6 +1,9 @@
 package org.yearup.service;
 
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.yearup.dtos.ProductSearchRequest;
+import org.yearup.errors.ProductNotFound;
 import org.yearup.models.Product;
 import org.yearup.repository.ProductRepository;
 
@@ -16,18 +19,39 @@ public class ProductService
         this.productRepository = productRepository;
     }
 
-    public List<Product> search(Integer categoryId, Double minPrice, Double maxPrice, String subCategory)
+    public List<Product> search(ProductSearchRequest productSearchRequest)
     {
-        List<Product> products = categoryId != null
-                ? productRepository.findByCategoryId(categoryId)
-                : productRepository.findAll();
 
-        return products.stream()
-                       .filter(p -> minPrice == null || p.getPrice() >= minPrice)
-                       .filter(p -> maxPrice == null || p.getPrice() <= maxPrice)
-                       .filter(p -> subCategory == null || subCategory.equalsIgnoreCase(p.getSubCategory()))
-                       .filter(Product::isFeatured)
-                       .toList();
+        // where 1=1
+        // Programmatic way of creating a query
+        Specification<Product> spec = Specification.where((root,query,cb)-> cb.conjunction());
+
+
+        if (productSearchRequest.getCat() != null){
+
+            // root is the entity we are using for this query ie; From Products
+            // query is the top level query ie (at this point) Select * from Products where 1=1
+            // criteriaBuilder is a factory that will help you create conditional checks ie
+            // where categoryID = productSearchRequest.getCategoryId
+           spec = spec.and(((root, query, criteriaBuilder)
+                   -> criteriaBuilder.equal(root.get("categoryId"), productSearchRequest.getCat())));
+        }
+        if (productSearchRequest.getSubCategory() != null){
+            spec = spec.and(((root, query, criteriaBuilder)
+                    -> criteriaBuilder.equal(root.get("subCategory"), productSearchRequest.getSubCategory())));
+        }
+
+        if (productSearchRequest.getMaxPrice() != null){
+            spec = spec.and(((root, query, criteriaBuilder)
+                    -> criteriaBuilder.lessThanOrEqualTo(root.get("price"), productSearchRequest.getMaxPrice()) ));
+        }
+
+        if (productSearchRequest.getMinPrice() != null){
+            spec = spec.and(((root, query, criteriaBuilder)
+                    -> criteriaBuilder.greaterThanOrEqualTo(root.get("price"), productSearchRequest.getMinPrice()) ));
+        }
+
+        return this.productRepository.findAll(spec);
     }
 
     public List<Product> listByCategoryId(int categoryId)
@@ -38,18 +62,21 @@ public class ProductService
 
     public Product getById(int productId)
     {
-        return productRepository.findById(productId).orElse(null);
+        return productRepository.findById(productId)
+                .orElseThrow(()->new ProductNotFound("Product with id: "+ productId + " not found"));
     }
 
     public Product create(Product product)
     {
-        product.setProductId(0);
+
         return productRepository.save(product);
     }
 
     public Product update(int productId, Product product)
     {
-        Product existing = productRepository.findById(productId).orElseThrow();
+        Product existing = productRepository.findById(productId).orElseThrow(
+                () -> new ProductNotFound("Product with id: " + productId + " not found")
+        );
         existing.setName(product.getName());
         existing.setPrice(product.getPrice());
         existing.setCategoryId(product.getCategoryId());
@@ -57,6 +84,7 @@ public class ProductService
         existing.setSubCategory(product.getSubCategory());
         existing.setFeatured(product.isFeatured());
         existing.setImageUrl(product.getImageUrl());
+        existing.setStock(product.getStock());
         return productRepository.save(existing);
     }
 
