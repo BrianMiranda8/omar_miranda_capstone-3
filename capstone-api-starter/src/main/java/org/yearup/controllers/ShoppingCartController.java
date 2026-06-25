@@ -19,7 +19,7 @@ import java.security.Principal;
 @RestController
 @RequestMapping("cart")
 @CrossOrigin
-@PreAuthorize("hasRole('USER')")
+@PreAuthorize("hasAnyRole('USER', 'ADMIN')")
 public class ShoppingCartController
 {
     // a shopping cart controller depends on the service layer
@@ -92,5 +92,17 @@ public class ShoppingCartController
         ShoppingCart shoppingCart = this.shoppingCartService.getByUserId(userId);
 
         return ResponseEntity.ok(shoppingCart);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<ShoppingCart> removeSingleItem(Principal principal, int id){
+        String username = principal.getName();
+        User user = userService.getByUserName(username);
+        int userId = user.getId();
+
+        this.shoppingCartService.deleteByUserAndProductId(userId, id);
+        ShoppingCart shoppingCart = this.shoppingCartService.getByUserId(id);
+
+        return  ResponseEntity.ok(shoppingCart);
     }
 }

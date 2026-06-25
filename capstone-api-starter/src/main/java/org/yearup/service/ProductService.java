@@ -92,4 +92,8 @@ public class ProductService
     {
         productRepository.deleteById(productId);
     }
+
+    public List<String> getSubCategories() {
+        return this.productRepository.findDistinctCategories();
+    }
 }

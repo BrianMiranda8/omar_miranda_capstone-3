@@ -31,11 +31,19 @@ public class ProductsController {
 
     @GetMapping("{id}")
     @PreAuthorize("permitAll()")
-    public Product getById(@PathVariable int id) {
-        return productService.getById(id);
+    public ResponseEntity<Product> getById(@PathVariable int id) {
+        Product product = productService.getById(id);
+        return ResponseEntity.ok(product);
 
     }
 
+
+    @GetMapping("/subCategories")
+    @PreAuthorize("permitAll()")
+    public ResponseEntity<List<String>> getSubCategories(){
+        List<String> subCategories = productService.getSubCategories();
+        return ResponseEntity.ok(subCategories);
+    }
     @PostMapping()
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<Product> addProduct(@RequestBody Product product) {

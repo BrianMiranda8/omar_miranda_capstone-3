@@ -24,7 +24,7 @@ withDefaults(defineProps<{
 .floating-input-group {
   position: relative;
   width: 100%;
-  max-width: 300px;
+
   margin-bottom: 1rem;
 }
 

@@ -1,6 +1,7 @@
 package org.yearup.service;
 
 import org.springframework.stereotype.Service;
+import org.yearup.errors.EmptyCart;
 import org.yearup.errors.ProductNotFound;
 import org.yearup.errors.UserNotFound;
 import org.yearup.models.*;
@@ -26,15 +27,21 @@ public class OrderService {
     }
 
     public void checkout(int userId) {
+
         List<CartItem> shoppingCart = this.shoppingCartRepository.findByUserId(userId);
         Profile profile = this.profileRepository.findById(userId).orElseThrow(()-> new UserNotFound("User id: "+ userId + " not found"));
+        if (shoppingCart.isEmpty()){
+            throw new EmptyCart("Cart has no items");
+        }
         Order preSaveOrder = new Order();
+
         preSaveOrder.setAddress(profile.getAddress());
         preSaveOrder.setCity(profile.getCity());
         preSaveOrder.setDate(LocalDate.now());
         preSaveOrder.setUserId(profile.getUserId());
         preSaveOrder.setZip(profile.getZip());
         preSaveOrder.setState(profile.getState());
+
         Order order = this.orderRepository.save(preSaveOrder);
 
         for (CartItem cartItem : shoppingCart){

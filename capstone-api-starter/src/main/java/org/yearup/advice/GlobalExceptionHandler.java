@@ -6,10 +6,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.NoHandlerFoundException;
-import org.yearup.errors.CategoryNotFound;
-import org.yearup.errors.DuplicateCategory;
-import org.yearup.errors.ProductNotFound;
-import org.yearup.errors.UserNotFound;
+import org.yearup.errors.*;
 
 import java.time.LocalDateTime;
 
@@ -38,6 +35,12 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(UserNotFound.class)
     public ResponseEntity<ApiErrorResponse> handleUserNotFound(RuntimeException ex){
         return new ResponseEntity<>(new ApiErrorResponse(LocalDateTime.now(), HttpStatus.NOT_FOUND.value(), HttpStatus.NOT_FOUND.getReasonPhrase(), ex.getMessage()), HttpStatus.NOT_FOUND);
+
+    }
+
+    @ExceptionHandler(EmptyCart.class)
+    public ResponseEntity<ApiErrorResponse> handleEmptyCart(RuntimeException ex){
+        return new ResponseEntity<>(new ApiErrorResponse(LocalDateTime.now(), HttpStatus.BAD_REQUEST.value(), HttpStatus.BAD_REQUEST.getReasonPhrase(), ex.getMessage()), HttpStatus.BAD_REQUEST);
 
     }
 

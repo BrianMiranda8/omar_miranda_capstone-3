@@ -9,7 +9,8 @@
   position: sticky;
   top: 10px;
   z-index: 10;
-  margin: 10px 10px
+  margin: 10px 10px;
+
 }
 
 .login-container {
@@ -80,9 +81,9 @@
         </span>
         Sign Out
       </Button>
-      <div class="cart-button">
+      <div v-if="cookie" class="cart-button">
         <span class="cart-total">{{ cartTotal }}</span>
-        <Button v-if="cookie" variant="ghost" color="white" @click="navigateTo('/cart')"> Cart </Button>
+        <Button variant="ghost" color="white" @click="navigateTo('/cart')"> Cart </Button>
       </div>
     </div>
   </div>

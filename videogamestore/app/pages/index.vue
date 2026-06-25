@@ -27,6 +27,12 @@ const { data: products, pending } = await useFetch('http://localhost:8080/produc
 </script>
 
 <style lang="css" scoped>
+@media (max-width: 650px) {
+  .product-list {
+    align-items: center;
+  }
+}
+
 /* Keeping your existing styles */
 .product-list {
   display: flex;
@@ -44,6 +50,7 @@ const { data: products, pending } = await useFetch('http://localhost:8080/produc
 }
 
 .search-filters {
+  flex-wrap: wrap;
   display: flex;
   width: 100%;
   justify-content: space-between;
