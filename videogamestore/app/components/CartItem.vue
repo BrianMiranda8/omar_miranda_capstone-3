@@ -6,7 +6,7 @@
     <h3 class="cart-item-name">{{ item.product.name }}</h3>
 
     <p class="cart-item-quantity">
-      Quantity: <input v-model="localQuantity" />
+      Quantity: <input class="cart-item-input" v-model="localQuantity" />
     </p>
     <Button @click="removeItem" size="small" variant="outline" color="danger">
       Remove
@@ -55,6 +55,13 @@ const removeItem = () => {
 </script>
 
 <style scoped>
+.cart-item-input {
+  border-radius: 5px;
+  text-align: center;
+  width: 30px;
+  border: 1px solid #3b82f6;
+}
+
 .cart-item {
   display: grid;
   min-height: 100px;

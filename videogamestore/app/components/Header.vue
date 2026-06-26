@@ -63,6 +63,22 @@
     font-size: 12px;
   }
 }
+
+a {
+  color: #64748b;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+a:hover {
+  color: #0284c7;
+}
+
+.router-link-exact-active {
+  color: white;
+
+  border-bottom: 1px solid white;
+}
 </style>
 <template>
   <div class="navbar">
@@ -70,17 +86,21 @@
 
       <img @click="navigateTo('/')" class="header-img" style="width: 100px; " src="/images/logo.svg"
         alt="Discover Nuxt">
-      <Button v-if="cookie" variant="ghost" color="white" @click="navigateTo('/profile')">Profile</Button>
+      <!-- <Button v-if="cookie" variant="ghost" color="white" @click="navigateTo('/profile')">Profile</Button> -->
+      <NuxtLink to="/profile">Profile</NuxtLink>
+      <NuxtLink to="/">Products</NuxtLink>
     </div>
     <div style="display: flex; gap: 10px;">
       <Button v-if="!cookie" variant="ghost" color="white" @click="toggleForm"> Sign In </Button>
+      <div v-else>
 
-      <Button v-else variant="ghost" color="white" @click="logout">
-        <span style="font-weight: bold;">
-          {{ cookie.user.username }}
+        <span style="font-weight: bold;color: white;">
+          Welcome {{ cookie.user.username }} !
         </span>
-        Sign Out
-      </Button>
+        <Button variant="ghost" color="white" @click="logout">
+          Sign Out
+        </Button>
+      </div>
 
       <div v-if="cookie" class="cart-button">
         <span class="cart-total">{{ itemCount }}</span>

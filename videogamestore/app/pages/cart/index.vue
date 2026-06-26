@@ -8,7 +8,7 @@
       <div class="total">
 
         <div>
-          Total View
+          Total Amount
         </div>
         <div class="price">
           {{ Intl.NumberFormat("US-en", { style: "currency", currency: "USD" }).format(cart.total) }}

@@ -41,7 +41,7 @@
         </div>
 
       </Transition>
-
+      <Toast v-if="toast.show" :type="toast.type" @destroy="toast.show = false" :message="toast.message" />
       <p v-if="errorMessage" class="error-message">{{ errorMessage }}</p>
     </div>
   </div>
@@ -59,6 +59,12 @@ const register = ref({
   role: "USER"
 })
 const showRegister = ref(false)
+const toast = reactive({
+  show: false,
+  type: "success",
+  message: ""
+
+})
 
 const username = ref('')
 const password = ref('')
@@ -79,8 +85,12 @@ const handleLogin = async () => {
     userCookie.value = response
     emit('close')
   } catch (error) {
-    console.log(error)
-    errorMessage.value = 'Invalid username or password.'
+    const { status } = error;
+    if (status == 401) {
+      toast.show = true;
+      toast.type = 'error'
+      toast.message = "Incorrect Password Or Username"
+    }
   }
 }
 
@@ -88,12 +98,25 @@ const handleRegister = async () => {
   if (register.value.username == "" || register.value.password == "" || register.value.confirmPassword == "") {
     return;
   }
-  const registerUser = await useFetch('http://localhost:8080/register', {
+  $fetch('http://localhost:8080/register', {
     method: "POST",
-    body: register
+    body: register.value
+  }).then(() => {
+    showRegister.value = false;
+    toast.show = true;
+    toast.message = "User Created"
+
+  }).catch(err => {
+    const { status, statusMessage } = err;
+
+    if (status == 400) {
+      toast.show = true;
+      toast.type = 'error'
+      toast.message = "User Already Exists"
+
+    }
   })
 
-  console.log(registerUser)
 }
 
 const toggleRegister = () => {

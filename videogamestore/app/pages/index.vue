@@ -101,6 +101,10 @@ const { data: products, pending } = await useFetch('http://localhost:8080/produc
   pointer-events: none;
   transition: opacity 0.2s ease-in-out;
 }
+
+.product-not-found {
+  text-align: center;
+}
 </style>
 
 <template>
@@ -160,7 +164,7 @@ const { data: products, pending } = await useFetch('http://localhost:8080/produc
 
     <div>
 
-      <div v-if="products.length === 0">
+      <div v-if="products.length === 0" class="product-not-found">
         No Products Found
       </div>
       <div v-else class="product-list" :class="{ 'is-loading': pending }">
