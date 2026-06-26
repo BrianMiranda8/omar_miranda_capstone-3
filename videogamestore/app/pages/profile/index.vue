@@ -10,7 +10,7 @@
     <Input id="lastName" label="State" size="md" type="text" v-model="profileData.state" />
     <Input id="lastName" label="Zip" size="md" type="text" v-model="profileData.zip" />
 
-    <Button size="medium" variant="outline">
+    <Button size="medium" variant="outline" @click="updateProfileData">
       Update
     </Button>
 
@@ -20,7 +20,7 @@
   </div>
 </template>
 
-<script lang="ts" setup>
+<script lang="js" setup>
 definePageMeta({
   middleware: 'auth'
 })
@@ -37,7 +37,17 @@ const { data: profileData } = await useFetch("http://localhost:8080/profile", {
   }
 })
 
-console.log('Fetched Profile:', profileData.value)
+const updateProfileData = () => {
+  $fetch("http://localhost:8080/profile", {
+    method: "PUT",
+    body: profileData.value,
+
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${cookie.value?.token || ''}`
+    }
+  })
+}
 </script>
 
 <style scoped>
