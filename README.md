@@ -44,7 +44,7 @@ Open a terminal, navigate to your backend directory, and boot the API:
 
 ```bash
 # Navigate into the backend directory
-cd backend
+cd capstone-api-starter
 
 # Run the application (using the included Maven Wrapper)
 ./mvnw spring-boot:run
