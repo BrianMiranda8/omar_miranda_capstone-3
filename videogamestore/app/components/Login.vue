@@ -50,7 +50,7 @@
 <script lang="js" setup>
 import { ref } from 'vue'
 
-defineEmits(['close'])
+const emit = defineEmits(['close'])
 
 const register = ref({
   username: "",
@@ -77,7 +77,7 @@ const handleLogin = async () => {
     })
 
     userCookie.value = response
-
+    emit('close')
   } catch (error) {
     console.log(error)
     errorMessage.value = 'Invalid username or password.'
@@ -85,7 +85,7 @@ const handleLogin = async () => {
 }
 
 const handleRegister = async () => {
-  if (register.value.username == "" || register.value.password == "" || register.value.password2 == "") {
+  if (register.value.username == "" || register.value.password == "" || register.value.confirmPassword == "") {
     return;
   }
   const registerUser = await useFetch('http://localhost:8080/register', {
