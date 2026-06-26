@@ -57,7 +57,7 @@ Open a **second terminal window**, navigate to the frontend directory, and start
 
 ```bash
 # Navigate into the frontend directory
-cd frontend
+cd videogamestore
 
 # Install dependencies
 npm install
