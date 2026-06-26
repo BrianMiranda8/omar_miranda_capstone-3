@@ -95,7 +95,7 @@ public class ShoppingCartController
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<ShoppingCart> removeSingleItem(Principal principal, int id){
+    public ResponseEntity<ShoppingCart> removeSingleItem(Principal principal, @PathVariable int id){
         String username = principal.getName();
         User user = userService.getByUserName(username);
         int userId = user.getId();

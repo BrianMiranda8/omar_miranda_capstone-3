@@ -83,7 +83,7 @@ public class ShoppingCartService
     public void deleteCart(int userId){
         this.shoppingCartRepository.deleteByUserId(userId);
     }
-
+@Transactional
     public void deleteByUserAndProductId(int userId, int id) {
         this.shoppingCartRepository.deleteByUserIdAndProductId(userId, id);
     }

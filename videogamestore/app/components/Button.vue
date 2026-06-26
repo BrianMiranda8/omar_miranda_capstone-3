@@ -9,11 +9,13 @@ const props = withDefaults(defineProps<{
     variant?: 'solid' | 'outline' | 'ghost'
     color?: 'primary' | 'secondary' | 'success' | 'danger' | 'warning' | 'info' | (string & {})
     // NEW: Added size options
-    size?: 'small' | 'medium' | 'large'
+    size?: 'small' | 'medium' | 'large',
+    disabled?: boolean
 }>(), {
     variant: 'solid',
     color: 'primary',
-    size: 'medium' // Default to medium so it doesn't break existing usage
+    size: 'medium',
+    disabled: false// Default to medium so it doesn't break existing usage
 })
 
 // 2. Create a dictionary of semantic colors
@@ -31,7 +33,7 @@ const resolvedColor = computed(() => colorMap[props.color] || props.color)
 </script>
 
 <template>
-    <button :class="['app-button', variant, size]" :style="{ '--btn-color': resolvedColor }">
+    <button :disabled="disabled" :class="['app-button', variant, size]" :style="{ '--btn-color': resolvedColor }">
         <slot />
     </button>
 </template>
@@ -44,6 +46,11 @@ const resolvedColor = computed(() => colorMap[props.color] || props.color)
     transition: all 0.2s ease;
     border: 2px solid var(--btn-color);
     /* Removed static padding and font-size from here so sizes can govern them */
+}
+
+.app-button:disabled {
+    opacity: .65;
+    cursor: none;
 }
 
 /* --- SIZES (New!) --- */
@@ -68,7 +75,7 @@ const resolvedColor = computed(() => colorMap[props.color] || props.color)
     color: #ffffff;
 }
 
-.app-button.solid:hover {
+.app-button.solid:hover:not(:disabled) {
     opacity: 0.85;
 }
 

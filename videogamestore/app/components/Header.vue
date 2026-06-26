@@ -81,10 +81,12 @@
         </span>
         Sign Out
       </Button>
+
       <div v-if="cookie" class="cart-button">
-        <span class="cart-total">{{ cartTotal }}</span>
+        <span class="cart-total">{{ itemCount }}</span>
         <Button variant="ghost" color="white" @click="navigateTo('/cart')"> Cart </Button>
       </div>
+
     </div>
   </div>
 
@@ -98,14 +100,12 @@
 
 <script setup lang="js">
 const cookie = useCookie('user');
-const cartTotal = ref(0);
 const showLoginForm = ref(false);
-const cartTrigger = useUseCartTrigger();
 
-watch(cartTrigger, () => {
-  getCartTotal();
-});
+const { itemCount, refreshCartCount } = useCart()
 
+
+refreshCartCount()
 
 const toggleForm = () => {
   showLoginForm.value = !showLoginForm.value
@@ -123,13 +123,6 @@ const logout = () => {
   navigateTo('/')
 }
 
-const getCartTotal = async () => {
-  const user = useCookie('user');
-  const data = await $fetch('http://localhost:8080/cart',
-    { method: 'GET', headers: { 'Authorization': `Bearer ${user.value.token}` } });
 
-  const total = Object.keys(data.items).length;
-  cartTotal.value = total;
-}
-getCartTotal();
+
 </script>

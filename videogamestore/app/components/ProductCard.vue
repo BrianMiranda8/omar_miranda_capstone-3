@@ -18,7 +18,7 @@
 
 <script lang="js" setup>
 const user = useCookie('user');
-const cartTrigger = useUseCartTrigger();
+const { refreshCartCount } = useCart()
 const props = defineProps({
   product: {
     type: Object,
@@ -32,7 +32,7 @@ const addToCart = async () => {
   const data = await $fetch('http://localhost:8080/cart/products/' + props.product.productId, { method: 'POST', headers: { 'Authorization': `Bearer ${user.value.token}` } });
   console.log('Product added to cart:', data);
 
-  cartTrigger.value++;
+  refreshCartCount()
 };
 
 

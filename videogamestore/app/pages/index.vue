@@ -104,7 +104,7 @@ const { data: products, pending } = await useFetch('http://localhost:8080/produc
 </style>
 
 <template>
-  <!-- <Header /> -->
+
 
   <div class="product-list-container">
 
